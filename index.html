@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Gunsu Lee - Resume Copy Sheet</title>
+<style>
+  :root{
+    --bg:#f4f5f7;
+    --card:#ffffff;
+    --accent:#2563eb;
+    --accent-dark:#1d4ed8;
+    --text:#1f2430;
+    --sub:#6b7280;
+    --border:#e5e7eb;
+    --success:#16a34a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    padding-bottom:60px;
+    -webkit-text-size-adjust:100%;
+  }
+  header.top{
+    background:var(--accent);
+    color:#fff;
+    padding:20px 16px 24px;
+    position:sticky;
+    top:0;
+    z-index:10;
+  }
+  header.top h1{
+    margin:0 0 4px;
+    font-size:20px;
+  }
+  header.top p{
+    margin:0;
+    font-size:13px;
+    opacity:0.9;
+  }
+  .container{
+    max-width:640px;
+    margin:0 auto;
+    padding:12px;
+  }
+  .section-title{
+    font-size:14px;
+    font-weight:700;
+    color:var(--sub);
+    margin:20px 4px 8px;
+    letter-spacing:0.03em;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:10px;
+    box-shadow:0 1px 2px rgba(0,0,0,0.03);
+  }
+  .card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:8px;
+  }
+  .card-title{
+    font-size:15px;
+    font-weight:600;
+    line-height:1.4;
+    word-break:break-word;
+  }
+  .card-sub{
+    font-size:13px;
+    color:var(--sub);
+    margin-top:2px;
+  }
+  .card-body{
+    font-size:13.5px;
+    line-height:1.55;
+    color:var(--text);
+    margin-top:8px;
+    white-space:pre-wrap;
+  }
+  ul.bullets{
+    margin:8px 0 0;
+    padding-left:18px;
+  }
+  ul.bullets li{
+    font-size:13.5px;
+    line-height:1.55;
+    margin-bottom:4px;
+  }
+  button.copy-btn{
+    flex:none;
+    border:none;
+    background:var(--accent);
+    color:#fff;
+    font-size:12.5px;
+    font-weight:600;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background 0.15s;
+  }
+  button.copy-btn:active{
+    background:var(--accent-dark);
+    transform:scale(0.97);
+  }
+  button.copy-btn.copied{
+    background:var(--success);
+  }
+  .field-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:8px 0;
+    border-bottom:1px dashed var(--border);
+    gap:8px;
+  }
+  .field-row:last-child{border-bottom:none;}
+  .field-label{
+    font-size:12px;
+    color:var(--sub);
+    min-width:56px;
+  }
+  .field-value{
+    font-size:13.5px;
+    flex:1;
+    word-break:break-all;
+  }
+  .job-block{
+    border-top:1px solid var(--border);
+    padding-top:12px;
+    margin-top:12px;
+  }
+  .job-block:first-child{
+    border-top:none;
+    padding-top:0;
+    margin-top:0;
+  }
+  .job-copy-row{
+    display:flex;
+    gap:6px;
+    margin-top:8px;
+    flex-wrap:wrap;
+  }
+  .job-copy-row button{
+    flex:1;
+    min-width:90px;
+  }
+  .toast{
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(0,0,0,0.85);
+    color:#fff;
+    padding:10px 18px;
+    border-radius:20px;
+    font-size:13px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.25s;
+    z-index:100;
+  }
+  .toast.show{opacity:1;}
+  .copy-all-btn{
+    display:block;
+    width:100%;
+    margin-top:8px;
+    background:#fff;
+    color:var(--accent);
+    border:1.5px solid #fff;
+    padding:10px;
+    border-radius:8px;
+    font-size:13.5px;
+    font-weight:700;
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>Gunsu Lee</h1>
+  <p>Software Developer | Data Engineer — 항목별로 복사 버튼을 눌러 지원서에 붙여넣으세요</p>
+</header>
+
+<div class="container">
+
+  <div class="section-title">기본 정보</div>
+  <div class="card" id="contact-card">
+    <div class="field-row">
+      <span class="field-label">이름</span>
+      <span class="field-value" id="f-name">Gunsu Lee</span>
+      <button class="copy-btn" data-target="f-name">복사</button>
+    </div>
+    <div class="field-row">
+      <span class="field-label">직함</span>
+      <span class="field-value" id="f-title">Software Developer | Data Engineer</span>
+      <button class="copy-btn" data-target="f-title">복사</button>
+    </div>
+    <div class="field-row">
+      <span class="field-label">지역</span>
+      <span class="field-value" id="f-loc">Kitchener, ON</span>
+      <button class="copy-btn" data-target="f-loc">복사</button>
+    </div>
+    <div class="field-row">
+      <span class="field-label">이메일</span>
+      <span class="field-value" id="f-email">lgswin@gmail.com</span>
+      <button class="copy-btn" data-target="f-email">복사</button>
+    </div>
+    <div class="field-row">
+      <span class="field-label">전화</span>
+      <span class="field-value" id="f-phone">(548)398-1765</span>
+      <button class="copy-btn" data-target="f-phone">복사</button>
+    </div>
+    <div class="field-row">
+      <span class="field-label">LinkedIn</span>
+      <span class="field-value" id="f-linkedin">www.linkedin.com/in/gunsu-lee/</span>
+      <button class="copy-btn" data-target="f-linkedin">복사</button>
+    </div>
+  </div>
+
+  <div class="section-title">HIGHLIGHT (요약)</div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">전문 요약</div>
+      <button class="copy-btn" data-target="highlight-text">전체 복사</button>
+    </div>
+    <div class="card-body" id="highlight-text">Software developer with 10+ years of experience in mobile applications, web development, and DevOps.
+Led high-impact projects like Samsung TV Plus and Samsung Music. Skilled in Android, DevOps, and cross-platform development.
+Experienced in CI/CD, Infrastructure as Code (IaC), and Cloud deployment using Terraform, Docker, and AWS.
+Developed and managed an ISO payment processing system integrated with RBC banking services, supporting automated funding, payment file generation, secure file transfer, and reconciliation workflows.
+Proven ability to streamline financial operations and improve system efficiency (e.g., reducing manual operations by 80%) using full-stack development and automation.
+Proficient in using generative AI tools such as ChatGPT, Claude, and Cursor, with experience leveraging AI-powered development tools and agentic AI to enhance development, debugging, and workflow automation.</div>
+  </div>
+
+  <div class="section-title">SKILLS</div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">DevOps &amp; Cloud</div>
+      <button class="copy-btn" data-target="skill-1">복사</button>
+    </div>
+    <div class="card-body" id="skill-1">AWS (EC2, IAM), Google Cloud Platform (GCP), Azure Cloud(VM), Docker, Terraform, CI/CD (GitHub Actions, Jenkins, CircleCI), Linux Administration.</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Programming &amp; Automation</div>
+      <button class="copy-btn" data-target="skill-2">복사</button>
+    </div>
+    <div class="card-body" id="skill-2">Java, Kotlin, Python, JavaScript, React (React Native, React.js), Node.js, PHP, RESTful APIs.</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Databases &amp; Tools</div>
+      <button class="copy-btn" data-target="skill-3">복사</button>
+    </div>
+    <div class="card-body" id="skill-3">SQL Server, MySQL, Firebase, Git, Jira, WordPress.</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Certificates</div>
+      <button class="copy-btn" data-target="skill-4">복사</button>
+    </div>
+    <div class="card-body" id="skill-4">AWS Certified Cloud Practitioner.</div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">전체 스킬 목록</div>
+      <button class="copy-btn" data-target="skill-all">전체 복사</button>
+    </div>
+    <div class="card-body" id="skill-all">DevOps &amp; Cloud: AWS (EC2, IAM), Google Cloud Platform (GCP), Azure Cloud(VM), Docker, Terraform, CI/CD (GitHub Actions, Jenkins, CircleCI), Linux Administration.
+Programming &amp; Automation: Java, Kotlin, Python, JavaScript, React (React Native, React.js), Node.js, PHP, RESTful APIs.
+Databases &amp; Tools: SQL Server, MySQL, Firebase, Git, Jira, WordPress.
+Certificates: AWS Certified Cloud Practitioner.</div>
+  </div>
+
+  <div class="section-title">WORK EXPERIENCE</div>
+  <div class="card">
+
+    <div class="job-block">
+      <div class="card-title">Senior Data Engineer &amp; Automation Lead</div>
+      <div class="card-sub">Cash4You | Jul 2025 – Present | Cambridge, Ontario</div>
+      <ul class="bullets" id="job1-desc">
+        <li>Developed and maintained an enterprise financial services portal using PHP and SQL Server, supporting 100+ locations across Ontario with automated ACH/EFT processing, loan management, and CRM systems.</li>
+        <li>Built automated cron job scripts for payment processing, collection campaigns, and data synchronization, reducing manual operations by 80% and improving system efficiency.</li>
+        <li>Integrated external APIs (Microsoft Graph, Twilio, SendGrid) for email processing, SMS/voice communications, and automated notifications.</li>
+        <li>Developed React-based modules for branch inspection and real-time transaction dashboards.</li>
+        <li>Designed and implemented KYC workflows, collection automation systems, and permission-based access controls, enabling unified multi-branch operations and data-driven decision making.</li>
+        <li>Designed, developed, and maintained an RBC-integrated ISO payment processing system, enabling automated loan funding, payment file generation, secure bank file transmission, reconciliation, and payment lifecycle management.</li>
+        <li>Integrated credit bureau APIs (TransUnion), open banking services (Flinks), document verification (Mitek), and communication services (Twilio) to streamline KYC and loan approval processes.</li>
+        <li>Developed REST APIs for POS systems, implemented real-time geolocation services, and created automated email/PDF generation workflows for loan documentation.</li>
+      </ul>
+      <div class="job-copy-row">
+        <button class="copy-btn" data-target="job1-title-line">제목 복사</button>
+        <button class="copy-btn" data-target="job1-desc">내용 복사</button>
+        <button class="copy-btn" data-target="job1-full">전체 복사</button>
+      </div>
+      <div style="display:none" id="job1-title-line">Senior Data Engineer &amp; Automation Lead | Cash4You | Jul 2025 – Present | Cambridge, Ontario</div>
+      <div style="display:none" id="job1-full">Senior Data Engineer &amp; Automation Lead
+Cash4You | Jul 2025 – Present | Cambridge, Ontario
+- Developed and maintained an enterprise financial services portal using PHP and SQL Server, supporting 100+ locations across Ontario with automated ACH/EFT processing, loan management, and CRM systems.
+- Built automated cron job scripts for payment processing, collection campaigns, and data synchronization, reducing manual operations by 80% and improving system efficiency.
+- Integrated external APIs (Microsoft Graph, Twilio, SendGrid) for email processing, SMS/voice communications, and automated notifications.
+- Developed React-based modules for branch inspection and real-time transaction dashboards.
+- Designed and implemented KYC workflows, collection automation systems, and permission-based access controls, enabling unified multi-branch operations and data-driven decision making.
+- Designed, developed, and maintained an RBC-integrated ISO payment processing system, enabling automated loan funding, payment file generation, secure bank file transmission, reconciliation, and payment lifecycle management.
+- Integrated credit bureau APIs (TransUnion), open banking services (Flinks), document verification (Mitek), and communication services (Twilio) to streamline KYC and loan approval processes.
+- Developed REST APIs for POS systems, implemented real-time geolocation services, and created automated email/PDF generation workflows for loan documentation.</div>
+    </div>
+
+    <div class="job-block">
+      <div class="card-title">Software Developer</div>
+      <div class="card-sub">Netrol Inc. | Apr 2024 – Aug 2024 | Waterloo, Ontario</div>
+      <ul class="bullets" id="job2-desc">
+        <li>Built an e-commerce mobile application using React Native and Expo.</li>
+        <li>Integrated Firebase for real-time data storage and authentication, ensuring seamless backend connectivity.</li>
+        <li>Managed and deployed the application using Firebase and Google Cloud Platform (GCP), ensuring scalable backend infrastructure and seamless cloud integration.</li>
+      </ul>
+      <div class="job-copy-row">
+        <button class="copy-btn" data-target="job2-title-line">제목 복사</button>
+        <button class="copy-btn" data-target="job2-desc">내용 복사</button>
+        <button class="copy-btn" data-target="job2-full">전체 복사</button>
+      </div>
+      <div style="display:none" id="job2-title-line">Software Developer | Netrol Inc. | Apr 2024 – Aug 2024 | Waterloo, Ontario</div>
+      <div style="display:none" id="job2-full">Software Developer
+Netrol Inc. | Apr 2024 – Aug 2024 | Waterloo, Ontario
+- Built an e-commerce mobile application using React Native and Expo.
+- Integrated Firebase for real-time data storage and authentication, ensuring seamless backend connectivity.
+- Managed and deployed the application using Firebase and Google Cloud Platform (GCP), ensuring scalable backend infrastructure and seamless cloud integration.</div>
+    </div>
+
+    <div class="job-block">
+      <div class="card-title">Administrative Director (Volunteer)</div>
+      <div class="card-sub">KW Korean Presbyterian Church | 2023 – Current | Waterloo, Ontario</div>
+      <ul class="bullets" id="job3-desc">
+        <li>Managed administrative operations to support church activities.</li>
+        <li>Designed and maintained WordPress website on Azure cloud.</li>
+        <li>Managed the broadcasting and audio system.</li>
+        <li>Developed the Church Management System (Full-stack web application) using React.js, Node.js/Express.js, and MySQL for managing member information, attendance tracking, statistical dashboards.</li>
+      </ul>
+      <div class="job-copy-row">
+        <button class="copy-btn" data-target="job3-title-line">제목 복사</button>
+        <button class="copy-btn" data-target="job3-desc">내용 복사</button>
+        <button class="copy-btn" data-target="job3-full">전체 복사</button>
+      </div>
+      <div style="display:none" id="job3-title-line">Administrative Director (Volunteer) | KW Korean Presbyterian Church | 2023 – Current | Waterloo, Ontario</div>
+      <div style="display:none" id="job3-full">Administrative Director (Volunteer)
+KW Korean Presbyterian Church | 2023 – Current | Waterloo, Ontario
+- Managed administrative operations to support church activities.
+- Designed and maintained WordPress website on Azure cloud.
+- Managed the broadcasting and audio system.
+- Developed the Church Management System (Full-stack web application) using React.js, Node.js/Express.js, and MySQL for managing member information, attendance tracking, statistical dashboards.</div>
+    </div>
+
+    <div class="job-block">
+      <div class="card-title">Software Developer</div>
+      <div class="card-sub">Samsung Electronics, Media Service Group | 2010 – 2023 | Suwon, Korea</div>
+      <ul class="bullets" id="job4-desc">
+        <li>Led a development team to launch Samsung TV Plus, expanding from Smart TVs to cross-device functionality.</li>
+        <li>Integrated global content providers' streaming servers, reaching 88M+ monthly active users worldwide.</li>
+        <li>Implemented test automation and Continuous Integration (CI) using Jenkins and CircleCI, enhancing development efficiency and ensuring code quality.</li>
+        <li>Developed the player, DRM, Android auto, integration with Melon online chart for Samsung Music, contributing to its 1 billion+ downloads on Google Play Store.</li>
+        <li>Enhanced Bixby AI performance and accuracy through advanced machine learning techniques, improving the virtual assistant's capabilities.</li>
+        <li>Built multiple Android applications, such as Samsung Video, Samsung Email, and Samsung Milk, utilizing Java and Kotlin.</li>
+      </ul>
+      <div class="job-copy-row">
+        <button class="copy-btn" data-target="job4-title-line">제목 복사</button>
+        <button class="copy-btn" data-target="job4-desc">내용 복사</button>
+        <button class="copy-btn" data-target="job4-full">전체 복사</button>
+      </div>
+      <div style="display:none" id="job4-title-line">Software Developer | Samsung Electronics, Media Service Group | 2010 – 2023 | Suwon, Korea</div>
+      <div style="display:none" id="job4-full">Software Developer
+Samsung Electronics, Media Service Group | 2010 – 2023 | Suwon, Korea
+- Led a development team to launch Samsung TV Plus, expanding from Smart TVs to cross-device functionality.
+- Integrated global content providers' streaming servers, reaching 88M+ monthly active users worldwide.
+- Implemented test automation and Continuous Integration (CI) using Jenkins and CircleCI, enhancing development efficiency and ensuring code quality.
+- Developed the player, DRM, Android auto, integration with Melon online chart for Samsung Music, contributing to its 1 billion+ downloads on Google Play Store.
+- Enhanced Bixby AI performance and accuracy through advanced machine learning techniques, improving the virtual assistant's capabilities.
+- Built multiple Android applications, such as Samsung Video, Samsung Email, and Samsung Milk, utilizing Java and Kotlin.</div>
+    </div>
+
+    <div class="job-block">
+      <div class="card-title">Software Engineer</div>
+      <div class="card-sub">Samsung Electronics, Mobile Division | 2002 – 2009 | Gumi, Korea</div>
+      <ul class="bullets" id="job5-desc">
+        <li>Developed cellular phone mobile system software, including key features such as telephony functionalities, GPS services, and voice recognition solutions.</li>
+        <li>Ensured compatibility of mobile devices with carrier networks, collaborating with major telecommunications providers to meet certification standards.</li>
+      </ul>
+      <div class="job-copy-row">
+        <button class="copy-btn" data-target="job5-title-line">제목 복사</button>
+        <button class="copy-btn" data-target="job5-desc">내용 복사</button>
+        <button class="copy-btn" data-target="job5-full">전체 복사</button>
+      </div>
+      <div style="display:none" id="job5-title-line">Software Engineer | Samsung Electronics, Mobile Division | 2002 – 2009 | Gumi, Korea</div>
+      <div style="display:none" id="job5-full">Software Engineer
+Samsung Electronics, Mobile Division | 2002 – 2009 | Gumi, Korea
+- Developed cellular phone mobile system software, including key features such as telephony functionalities, GPS services, and voice recognition solutions.
+- Ensured compatibility of mobile devices with carrier networks, collaborating with major telecommunications providers to meet certification standards.</div>
+    </div>
+
+  </div>
+
+  <div class="section-title">EDUCATION</div>
+  <div class="card">
+    <div class="job-block">
+      <div class="card-title">College Graduate Certificate</div>
+      <div class="card-sub">Computer Appl. Development, Cloud Development &amp; Operation</div>
+      <div class="card-sub">Conestoga College (2023-2025) | Waterloo, ON</div>
+      <div class="job-copy-row">
+        <button class="copy-btn" data-target="edu1-full">전체 복사</button>
+      </div>
+      <div style="display:none" id="edu1-full">College Graduate Certificate
+Computer Appl. Development, Cloud Development & Operation
+Conestoga College (2023-2025) Waterloo, ON</div>
+    </div>
+    <div class="job-block">
+      <div class="card-title">Master's Degree</div>
+      <div class="card-sub">Mechanical Engineering (Computer Aided Design and Computer Aided Manufacturing)</div>
+      <div class="card-sub">Busan National University (2000-2002) | Busan, Korea</div>
+      <div class="job-copy-row">
+        <button class="copy-btn" data-target="edu2-full">전체 복사</button>
+      </div>
+      <div style="display:none" id="edu2-full">Master's Degree
+Mechanical Engineering (Computer Aided Design and Computer Aided Manufacturing)
+Busan National University (2000-2002) Busan, Korea</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">복사되었습니다</div>
+
+<script>
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg || '복사되었습니다';
+  t.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=>t.classList.remove('show'), 1400);
+}
+
+document.querySelectorAll('.copy-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const targetId = btn.getAttribute('data-target');
+    const el = document.getElementById(targetId);
+    if(!el) return;
+    const text = el.innerText || el.textContent;
+    const done = ()=>{
+      showToast('복사되었습니다');
+      const orig = btn.textContent;
+      btn.textContent = '✓ 완료';
+      btn.classList.add('copied');
+      setTimeout(()=>{
+        btn.textContent = orig;
+        btn.classList.remove('copied');
+      }, 1200);
+    };
+    if(navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(done).catch(()=>{
+        fallbackCopy(text);
+        done();
+      });
+    } else {
+      fallbackCopy(text);
+      done();
+    }
+  });
+});
+</script>
+
+</body>
+</html>

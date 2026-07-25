@@ -181,6 +181,180 @@
     font-size:13.5px;
     font-weight:700;
   }
+
+  /* ===== Job application tracker ===== */
+  .app-form label{
+    display:block;
+    font-size:12px;
+    color:var(--sub);
+    margin:10px 0 4px;
+    font-weight:600;
+  }
+  .app-form label:first-child{margin-top:0;}
+  .app-form input,
+  .app-form textarea,
+  .app-form select{
+    width:100%;
+    padding:9px 10px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    font-size:14px;
+    font-family:inherit;
+    color:var(--text);
+    background:#fff;
+  }
+  .app-form input:focus,
+  .app-form textarea:focus,
+  .app-form select:focus{
+    outline:none;
+    border-color:var(--accent);
+  }
+  .app-form textarea{
+    resize:vertical;
+    min-height:56px;
+  }
+  .app-form .form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0 8px;
+  }
+  .app-form .form-actions{
+    display:flex;
+    gap:6px;
+    margin-top:12px;
+  }
+  .btn{
+    border:none;
+    border-radius:8px;
+    padding:10px 14px;
+    font-size:13.5px;
+    font-weight:600;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .btn-primary{
+    background:var(--accent);
+    color:#fff;
+    flex:1;
+  }
+  .btn-primary:active{background:var(--accent-dark);}
+  .btn-secondary{
+    background:#eef2ff;
+    color:var(--accent);
+  }
+  .btn-danger{
+    background:#fee2e2;
+    color:#dc2626;
+  }
+  .btn-small{
+    padding:6px 10px;
+    font-size:12px;
+    border-radius:6px;
+  }
+  .app-toolbar{
+    display:flex;
+    gap:6px;
+    margin-bottom:10px;
+  }
+  .app-toolbar input{
+    flex:1;
+    padding:8px 10px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    font-size:13.5px;
+    font-family:inherit;
+  }
+  .app-toolbar select{
+    padding:8px 6px;
+    border:1px solid var(--border);
+    border-radius:8px;
+    font-size:13px;
+    font-family:inherit;
+    background:#fff;
+    color:var(--text);
+  }
+  .status-badge{
+    display:inline-block;
+    font-size:11.5px;
+    font-weight:700;
+    padding:3px 9px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+  .status-saved{background:#f3f4f6;color:#4b5563;}
+  .status-applied{background:#dbeafe;color:#1d4ed8;}
+  .status-interview{background:#fef3c7;color:#b45309;}
+  .status-offer{background:#dcfce7;color:#15803d;}
+  .status-rejected{background:#fee2e2;color:#b91c1c;}
+  .status-closed{background:#e5e7eb;color:#6b7280;}
+  .app-item .card-header{align-items:center;}
+  .app-item .app-link{
+    font-size:12.5px;
+    color:var(--accent);
+    word-break:break-all;
+    text-decoration:none;
+    display:inline-block;
+    margin-top:4px;
+  }
+  .app-item .app-memo{
+    font-size:13px;
+    color:var(--text);
+    margin-top:6px;
+    white-space:pre-wrap;
+    background:#f9fafb;
+    border-radius:8px;
+    padding:8px 10px;
+  }
+  .app-item .app-actions{
+    display:flex;
+    gap:6px;
+    margin-top:10px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .app-item .app-actions select{
+    padding:6px 6px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    font-size:12px;
+    font-family:inherit;
+    background:#fff;
+  }
+  .app-item .app-date{
+    font-size:11.5px;
+    color:var(--sub);
+    margin-left:auto;
+  }
+  .app-empty{
+    text-align:center;
+    color:var(--sub);
+    font-size:13px;
+    padding:20px 0;
+  }
+  .app-stats{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    margin-bottom:10px;
+  }
+  .app-stats .stat{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:6px 10px;
+    font-size:12px;
+    color:var(--sub);
+  }
+  .app-stats .stat b{
+    color:var(--text);
+    font-size:13px;
+  }
+  .app-io-row{
+    display:flex;
+    gap:6px;
+    margin-top:10px;
+  }
+  .app-io-row .btn{flex:1;}
 </style>
 </head>
 <body>
@@ -432,6 +606,61 @@ Busan National University (2000-2002) Busan, Korea</div>
     </div>
   </div>
 
+  <div class="section-title">JOB APPLICATIONS (지원 이력)</div>
+
+  <div class="card app-form">
+    <form id="app-form">
+      <label for="app-link">잡 포스팅 링크 *</label>
+      <input type="url" id="app-link" placeholder="https://..." required inputmode="url">
+      <div class="form-grid">
+        <div>
+          <label for="app-company">회사명</label>
+          <input type="text" id="app-company" placeholder="예: Shopify">
+        </div>
+        <div>
+          <label for="app-position">포지션</label>
+          <input type="text" id="app-position" placeholder="예: Software Developer">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div>
+          <label for="app-status">상태</label>
+          <select id="app-status"></select>
+        </div>
+        <div>
+          <label for="app-date">지원일</label>
+          <input type="date" id="app-date">
+        </div>
+      </div>
+      <label for="app-memo">메모</label>
+      <textarea id="app-memo" placeholder="예: 커버레터 제출함, 리크루터 이름 등"></textarea>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="app-submit-btn">지원 이력 추가</button>
+        <button type="button" class="btn btn-secondary" id="app-cancel-btn" style="display:none">취소</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="app-stats" id="app-stats"></div>
+
+  <div class="app-toolbar">
+    <input type="search" id="app-search" placeholder="회사/포지션/메모 검색">
+    <select id="app-filter">
+      <option value="">전체 상태</option>
+    </select>
+  </div>
+
+  <div id="app-list"></div>
+
+  <div class="app-io-row">
+    <button type="button" class="btn btn-secondary" id="app-export-btn">JSON 내보내기</button>
+    <button type="button" class="btn btn-secondary" id="app-import-btn">JSON 가져오기</button>
+    <input type="file" id="app-import-file" accept=".json,application/json" style="display:none">
+  </div>
+  <p style="font-size:11.5px;color:var(--sub);margin:8px 4px 0;">
+    지원 이력은 이 브라우저(localStorage)에만 저장됩니다. 다른 기기로 옮기려면 JSON 내보내기/가져오기를 사용하세요.
+  </p>
+
 </div>
 
 <div class="toast" id="toast">복사되었습니다</div>
@@ -484,6 +713,260 @@ document.querySelectorAll('.copy-btn').forEach(btn=>{
     }
   });
 });
+
+/* ===== Job application tracker ===== */
+(function(){
+  const STORAGE_KEY = 'jobApplications.v1';
+  const STATUSES = [
+    { value:'saved',     label:'저장됨',   cls:'status-saved' },
+    { value:'applied',   label:'지원함',   cls:'status-applied' },
+    { value:'interview', label:'인터뷰',   cls:'status-interview' },
+    { value:'offer',     label:'오퍼',     cls:'status-offer' },
+    { value:'rejected',  label:'거절됨',   cls:'status-rejected' },
+    { value:'closed',    label:'마감/철회', cls:'status-closed' },
+  ];
+
+  const form = document.getElementById('app-form');
+  const linkInput = document.getElementById('app-link');
+  const companyInput = document.getElementById('app-company');
+  const positionInput = document.getElementById('app-position');
+  const statusSelect = document.getElementById('app-status');
+  const dateInput = document.getElementById('app-date');
+  const memoInput = document.getElementById('app-memo');
+  const submitBtn = document.getElementById('app-submit-btn');
+  const cancelBtn = document.getElementById('app-cancel-btn');
+  const listEl = document.getElementById('app-list');
+  const statsEl = document.getElementById('app-stats');
+  const searchInput = document.getElementById('app-search');
+  const filterSelect = document.getElementById('app-filter');
+
+  let apps = load();
+  let editingId = null;
+
+  // populate status selects
+  STATUSES.forEach(s=>{
+    statusSelect.add(new Option(s.label, s.value));
+    filterSelect.add(new Option(s.label, s.value));
+  });
+  statusSelect.value = 'applied';
+  dateInput.value = todayStr();
+
+  function todayStr(){
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function load(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const data = raw ? JSON.parse(raw) : [];
+      return Array.isArray(data) ? data : [];
+    }catch(e){ return []; }
+  }
+  function save(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(apps));
+    }catch(e){
+      showToast('저장 실패: 저장 공간을 확인하세요');
+    }
+  }
+  function statusInfo(value){
+    return STATUSES.find(s=>s.value===value) || STATUSES[0];
+  }
+  function escapeHtml(str){
+    return String(str||'').replace(/[&<>"']/g, ch=>({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[ch]));
+  }
+  function hostOf(url){
+    try{ return new URL(url).hostname.replace(/^www\./,''); }catch(e){ return url; }
+  }
+
+  function resetForm(){
+    form.reset();
+    statusSelect.value = 'applied';
+    dateInput.value = todayStr();
+    editingId = null;
+    submitBtn.textContent = '지원 이력 추가';
+    cancelBtn.style.display = 'none';
+  }
+
+  form.addEventListener('submit', e=>{
+    e.preventDefault();
+    const entry = {
+      link: linkInput.value.trim(),
+      company: companyInput.value.trim(),
+      position: positionInput.value.trim(),
+      status: statusSelect.value,
+      date: dateInput.value || todayStr(),
+      memo: memoInput.value.trim(),
+    };
+    if(!entry.link){ return; }
+    if(editingId){
+      const idx = apps.findIndex(a=>a.id===editingId);
+      if(idx !== -1){ apps[idx] = Object.assign({}, apps[idx], entry); }
+      showToast('수정되었습니다');
+    } else {
+      entry.id = Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+      entry.createdAt = new Date().toISOString();
+      apps.unshift(entry);
+      showToast('지원 이력이 추가되었습니다');
+    }
+    save();
+    resetForm();
+    render();
+  });
+
+  cancelBtn.addEventListener('click', resetForm);
+  searchInput.addEventListener('input', render);
+  filterSelect.addEventListener('change', render);
+
+  function startEdit(app){
+    editingId = app.id;
+    linkInput.value = app.link || '';
+    companyInput.value = app.company || '';
+    positionInput.value = app.position || '';
+    statusSelect.value = app.status || 'applied';
+    dateInput.value = app.date || todayStr();
+    memoInput.value = app.memo || '';
+    submitBtn.textContent = '수정 저장';
+    cancelBtn.style.display = '';
+    form.scrollIntoView({ behavior:'smooth', block:'start' });
+    linkInput.focus();
+  }
+
+  function render(){
+    // stats
+    const counts = {};
+    apps.forEach(a=>{ counts[a.status] = (counts[a.status]||0)+1; });
+    statsEl.innerHTML =
+      '<span class="stat">전체 <b>' + apps.length + '</b></span>' +
+      STATUSES.filter(s=>counts[s.value]).map(s=>
+        '<span class="stat">' + s.label + ' <b>' + counts[s.value] + '</b></span>'
+      ).join('');
+
+    // list (filtered)
+    const q = searchInput.value.trim().toLowerCase();
+    const f = filterSelect.value;
+    const filtered = apps.filter(a=>{
+      if(f && a.status !== f) return false;
+      if(q){
+        const hay = [a.company, a.position, a.memo, a.link].join(' ').toLowerCase();
+        if(!hay.includes(q)) return false;
+      }
+      return true;
+    });
+
+    if(filtered.length === 0){
+      listEl.innerHTML = '<div class="card"><div class="app-empty">' +
+        (apps.length === 0 ? '등록된 지원 이력이 없습니다. 위에서 잡 포스팅 링크를 추가해보세요.' : '검색/필터 결과가 없습니다.') +
+        '</div></div>';
+      return;
+    }
+
+    listEl.innerHTML = filtered.map(a=>{
+      const si = statusInfo(a.status);
+      const title = escapeHtml(a.position || '(포지션 미입력)');
+      const company = escapeHtml(a.company || hostOf(a.link));
+      const statusOptions = STATUSES.map(s=>
+        '<option value="' + s.value + '"' + (s.value===a.status?' selected':'') + '>' + s.label + '</option>'
+      ).join('');
+      return '<div class="card app-item" data-id="' + a.id + '">' +
+        '<div class="card-header">' +
+          '<div>' +
+            '<div class="card-title">' + title + '</div>' +
+            '<div class="card-sub">' + company + '</div>' +
+          '</div>' +
+          '<span class="status-badge ' + si.cls + '">' + si.label + '</span>' +
+        '</div>' +
+        '<a class="app-link" href="' + escapeHtml(a.link) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(a.link) + '</a>' +
+        (a.memo ? '<div class="app-memo">' + escapeHtml(a.memo) + '</div>' : '') +
+        '<div class="app-actions">' +
+          '<select data-action="status">' + statusOptions + '</select>' +
+          '<button type="button" class="btn btn-secondary btn-small" data-action="edit">수정</button>' +
+          '<button type="button" class="btn btn-danger btn-small" data-action="delete">삭제</button>' +
+          '<span class="app-date">지원일 ' + escapeHtml(a.date || '-') + '</span>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  listEl.addEventListener('click', e=>{
+    const btn = e.target.closest('button[data-action]');
+    if(!btn) return;
+    const id = btn.closest('.app-item').getAttribute('data-id');
+    const app = apps.find(a=>a.id===id);
+    if(!app) return;
+    if(btn.dataset.action === 'edit'){
+      startEdit(app);
+    } else if(btn.dataset.action === 'delete'){
+      if(confirm('이 지원 이력을 삭제할까요?\n' + (app.company || app.link))){
+        apps = apps.filter(a=>a.id!==id);
+        if(editingId === id) resetForm();
+        save();
+        render();
+        showToast('삭제되었습니다');
+      }
+    }
+  });
+
+  listEl.addEventListener('change', e=>{
+    const sel = e.target.closest('select[data-action="status"]');
+    if(!sel) return;
+    const id = sel.closest('.app-item').getAttribute('data-id');
+    const app = apps.find(a=>a.id===id);
+    if(!app) return;
+    app.status = sel.value;
+    save();
+    render();
+    showToast('상태가 변경되었습니다');
+  });
+
+  // export / import
+  document.getElementById('app-export-btn').addEventListener('click', ()=>{
+    const blob = new Blob([JSON.stringify(apps, null, 2)], { type:'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'job-applications-' + todayStr() + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  const importFile = document.getElementById('app-import-file');
+  document.getElementById('app-import-btn').addEventListener('click', ()=>importFile.click());
+  importFile.addEventListener('change', ()=>{
+    const file = importFile.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      try{
+        const data = JSON.parse(reader.result);
+        if(!Array.isArray(data)) throw new Error('invalid');
+        const existingIds = new Set(apps.map(a=>a.id));
+        let added = 0;
+        data.forEach(item=>{
+          if(!item || !item.link) return;
+          if(item.id && existingIds.has(item.id)) return;
+          if(!item.id) item.id = Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+          apps.push(item);
+          added++;
+        });
+        apps.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+        save();
+        render();
+        showToast(added + '건을 가져왔습니다');
+      }catch(err){
+        showToast('가져오기 실패: 올바른 JSON 파일이 아닙니다');
+      }
+      importFile.value = '';
+    };
+    reader.readAsText(file);
+  });
+
+  render();
+})();
 </script>
 
 </body>

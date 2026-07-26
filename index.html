@@ -27,7 +27,7 @@
   header.top{
     background:var(--accent);
     color:#fff;
-    padding:20px 16px 24px;
+    padding:16px 16px 0;
     position:sticky;
     top:0;
     z-index:10;
@@ -37,10 +37,34 @@
     font-size:20px;
   }
   header.top p{
-    margin:0;
+    margin:0 0 12px;
     font-size:13px;
     opacity:0.9;
   }
+  .tab-nav{
+    display:flex;
+    gap:0;
+    margin:0 -16px;
+  }
+  .tab-nav button{
+    flex:1;
+    border:none;
+    background:transparent;
+    color:rgba(255,255,255,0.75);
+    font-size:14px;
+    font-weight:600;
+    padding:12px 8px;
+    cursor:pointer;
+    font-family:inherit;
+    border-bottom:3px solid transparent;
+  }
+  .tab-nav button.active{
+    color:#fff;
+    border-bottom-color:#fff;
+    background:rgba(255,255,255,0.12);
+  }
+  .panel{display:none;}
+  .panel.active{display:block;}
   .container{
     max-width:640px;
     margin:0 auto;
@@ -361,10 +385,75 @@
 
 <header class="top">
   <h1>Gunsu Lee</h1>
-  <p>Software Developer | Data Engineer — 항목별로 복사 버튼을 눌러 지원서에 붙여넣으세요</p>
+  <p id="header-sub">잡 포스팅 링크를 등록하고 지원 이력을 관리하세요</p>
+  <nav class="tab-nav" role="tablist">
+    <button type="button" class="active" data-tab="apps" role="tab" aria-selected="true">지원 이력</button>
+    <button type="button" data-tab="resume" role="tab" aria-selected="false">이력서 복사</button>
+  </nav>
 </header>
 
 <div class="container">
+
+  <div id="panel-apps" class="panel active">
+
+  <div class="section-title">JOB APPLICATIONS (지원 이력)</div>
+
+  <div class="card app-form">
+    <form id="app-form">
+      <label for="app-link">잡 포스팅 링크 *</label>
+      <input type="url" id="app-link" placeholder="https://..." required inputmode="url">
+      <div class="form-grid">
+        <div>
+          <label for="app-company">회사명</label>
+          <input type="text" id="app-company" placeholder="예: Shopify">
+        </div>
+        <div>
+          <label for="app-position">포지션</label>
+          <input type="text" id="app-position" placeholder="예: Software Developer">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div>
+          <label for="app-status">상태</label>
+          <select id="app-status"></select>
+        </div>
+        <div>
+          <label for="app-date">지원일</label>
+          <input type="date" id="app-date">
+        </div>
+      </div>
+      <label for="app-memo">메모</label>
+      <textarea id="app-memo" placeholder="예: 커버레터 제출함, 리크루터 이름 등"></textarea>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="app-submit-btn">지원 이력 추가</button>
+        <button type="button" class="btn btn-secondary" id="app-cancel-btn" style="display:none">취소</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="app-stats" id="app-stats"></div>
+
+  <div class="app-toolbar">
+    <input type="search" id="app-search" placeholder="회사/포지션/메모 검색">
+    <select id="app-filter">
+      <option value="">전체 상태</option>
+    </select>
+  </div>
+
+  <div id="app-list"></div>
+
+  <div class="app-io-row">
+    <button type="button" class="btn btn-secondary" id="app-export-btn">JSON 내보내기</button>
+    <button type="button" class="btn btn-secondary" id="app-import-btn">JSON 가져오기</button>
+    <input type="file" id="app-import-file" accept=".json,application/json" style="display:none">
+  </div>
+  <p style="font-size:11.5px;color:var(--sub);margin:8px 4px 0;">
+    지원 이력은 이 브라우저(localStorage)에만 저장됩니다. 다른 기기로 옮기려면 JSON 내보내기/가져오기를 사용하세요.
+  </p>
+
+  </div><!-- /panel-apps -->
+
+  <div id="panel-resume" class="panel">
 
   <div class="section-title">기본 정보</div>
   <div class="card" id="contact-card">
@@ -606,60 +695,7 @@ Busan National University (2000-2002) Busan, Korea</div>
     </div>
   </div>
 
-  <div class="section-title">JOB APPLICATIONS (지원 이력)</div>
-
-  <div class="card app-form">
-    <form id="app-form">
-      <label for="app-link">잡 포스팅 링크 *</label>
-      <input type="url" id="app-link" placeholder="https://..." required inputmode="url">
-      <div class="form-grid">
-        <div>
-          <label for="app-company">회사명</label>
-          <input type="text" id="app-company" placeholder="예: Shopify">
-        </div>
-        <div>
-          <label for="app-position">포지션</label>
-          <input type="text" id="app-position" placeholder="예: Software Developer">
-        </div>
-      </div>
-      <div class="form-grid">
-        <div>
-          <label for="app-status">상태</label>
-          <select id="app-status"></select>
-        </div>
-        <div>
-          <label for="app-date">지원일</label>
-          <input type="date" id="app-date">
-        </div>
-      </div>
-      <label for="app-memo">메모</label>
-      <textarea id="app-memo" placeholder="예: 커버레터 제출함, 리크루터 이름 등"></textarea>
-      <div class="form-actions">
-        <button type="submit" class="btn btn-primary" id="app-submit-btn">지원 이력 추가</button>
-        <button type="button" class="btn btn-secondary" id="app-cancel-btn" style="display:none">취소</button>
-      </div>
-    </form>
-  </div>
-
-  <div class="app-stats" id="app-stats"></div>
-
-  <div class="app-toolbar">
-    <input type="search" id="app-search" placeholder="회사/포지션/메모 검색">
-    <select id="app-filter">
-      <option value="">전체 상태</option>
-    </select>
-  </div>
-
-  <div id="app-list"></div>
-
-  <div class="app-io-row">
-    <button type="button" class="btn btn-secondary" id="app-export-btn">JSON 내보내기</button>
-    <button type="button" class="btn btn-secondary" id="app-import-btn">JSON 가져오기</button>
-    <input type="file" id="app-import-file" accept=".json,application/json" style="display:none">
-  </div>
-  <p style="font-size:11.5px;color:var(--sub);margin:8px 4px 0;">
-    지원 이력은 이 브라우저(localStorage)에만 저장됩니다. 다른 기기로 옮기려면 JSON 내보내기/가져오기를 사용하세요.
-  </p>
+  </div><!-- /panel-resume -->
 
 </div>
 
@@ -713,6 +749,32 @@ document.querySelectorAll('.copy-btn').forEach(btn=>{
     }
   });
 });
+
+/* ===== Tab navigation ===== */
+(function(){
+  const sub = document.getElementById('header-sub');
+  const subs = {
+    apps: '잡 포스팅 링크를 등록하고 지원 이력을 관리하세요',
+    resume: '항목별로 복사 버튼을 눌러 지원서에 붙여넣으세요'
+  };
+  function showTab(name){
+    document.querySelectorAll('.tab-nav button').forEach(b=>{
+      const on = b.dataset.tab === name;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    document.querySelectorAll('.panel').forEach(p=>{
+      p.classList.toggle('active', p.id === 'panel-' + name);
+    });
+    if(sub) sub.textContent = subs[name] || '';
+    if(history.replaceState) history.replaceState(null, '', '#' + name);
+  }
+  document.querySelectorAll('.tab-nav button').forEach(btn=>{
+    btn.addEventListener('click', ()=> showTab(btn.dataset.tab));
+  });
+  const hash = (location.hash || '#apps').slice(1);
+  showTab(hash === 'resume' ? 'resume' : 'apps');
+})();
 
 /* ===== Job application tracker ===== */
 (function(){

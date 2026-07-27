@@ -333,28 +333,87 @@
   .status-offer{background:#dcfce7;color:#15803d;}
   .status-rejected{background:#fee2e2;color:#b91c1c;}
   .status-closed{background:#e5e7eb;color:#6b7280;}
-  .app-item .card-header{align-items:center;}
-  .app-item .app-link{
-    font-size:12.5px;
-    color:var(--accent);
-    word-break:break-all;
-    text-decoration:none;
-    display:inline-block;
-    margin-top:4px;
+  .app-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+    padding:12px 14px;
+    transition:background 0.12s;
   }
-  .app-item .app-memo{
-    font-size:13px;
-    color:var(--text);
-    margin-top:6px;
+  .app-row:active{background:#f3f4f6;}
+  .app-row .row-main{flex:1;min-width:0;}
+  .app-row .card-title{
+    margin:0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .app-row .card-sub{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .app-row .row-meta{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    gap:4px;
+    flex:none;
+  }
+  .app-row .app-date{
+    font-size:11px;
+    color:var(--sub);
+    margin:0;
+  }
+  .app-row .row-chevron{
+    color:var(--sub);
+    font-size:18px;
+    line-height:1;
+    flex:none;
+  }
+  .app-detail-view{display:none;}
+  .app-detail-view.active{display:block;}
+  .app-list-view.hidden{display:none;}
+  .detail-back{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    border:none;
+    background:transparent;
+    color:var(--accent);
+    font-size:13.5px;
+    font-weight:600;
+    padding:0;
+    margin:0 0 10px;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .detail-field{
+    padding:10px 0;
+    border-bottom:1px dashed var(--border);
+  }
+  .detail-field:last-of-type{border-bottom:none;}
+  .detail-label{
+    font-size:11.5px;
+    color:var(--sub);
+    font-weight:600;
+    margin-bottom:3px;
+  }
+  .detail-value{
+    font-size:14px;
+    word-break:break-word;
     white-space:pre-wrap;
-    background:#f9fafb;
-    border-radius:8px;
-    padding:8px 10px;
+  }
+  .detail-value a{
+    color:var(--accent);
+    text-decoration:none;
+    word-break:break-all;
   }
   .app-item .app-actions{
     display:flex;
     gap:6px;
-    margin-top:10px;
+    margin-top:12px;
     align-items:center;
     flex-wrap:wrap;
   }
@@ -365,11 +424,6 @@
     font-size:12px;
     font-family:inherit;
     background:#fff;
-  }
-  .app-item .app-date{
-    font-size:11.5px;
-    color:var(--sub);
-    margin-left:auto;
   }
   .app-empty{
     text-align:center;
@@ -417,6 +471,8 @@
 <div class="container">
 
   <div id="panel-apps" class="panel active">
+
+  <div id="app-list-view" class="app-list-view">
 
   <div class="section-title">JOB APPLICATIONS (지원 이력)</div>
 
@@ -476,6 +532,13 @@
   <p style="font-size:11.5px;color:var(--sub);margin:8px 4px 0;">
     지원 이력은 이 브라우저(localStorage)에만 저장됩니다. 다른 기기로 옮기려면 JSON 내보내기/가져오기를 사용하세요.
   </p>
+
+  </div><!-- /app-list-view -->
+
+  <div id="app-detail-view" class="app-detail-view">
+    <button type="button" class="detail-back" id="app-detail-back">← 목록으로</button>
+    <div class="card app-item" id="app-detail-card"></div>
+  </div>
 
   </div><!-- /panel-apps -->
 
@@ -783,7 +846,7 @@ document.querySelectorAll('.copy-btn').forEach(btn=>{
     apps: '잡 포스팅 링크를 등록하고 지원 이력을 관리하세요',
     resume: '항목별로 복사 버튼을 눌러 지원서에 붙여넣으세요'
   };
-  function showTab(name){
+  window.showAppTab = function(name){
     document.querySelectorAll('.tab-nav button').forEach(b=>{
       const on = b.dataset.tab === name;
       b.classList.toggle('active', on);
@@ -793,13 +856,18 @@ document.querySelectorAll('.copy-btn').forEach(btn=>{
       p.classList.toggle('active', p.id === 'panel-' + name);
     });
     if(sub) sub.textContent = subs[name] || '';
-    if(history.replaceState) history.replaceState(null, '', '#' + name);
-  }
+  };
   document.querySelectorAll('.tab-nav button').forEach(btn=>{
-    btn.addEventListener('click', ()=> showTab(btn.dataset.tab));
+    btn.addEventListener('click', ()=>{
+      window.showAppTab(btn.dataset.tab);
+      if(btn.dataset.tab === 'apps' && window.showAppList){
+        window.showAppList();
+      } else if(history.replaceState){
+        history.replaceState(null, '', '#' + btn.dataset.tab);
+      }
+    });
   });
-  const hash = (location.hash || '#apps').slice(1);
-  showTab(hash === 'resume' ? 'resume' : 'apps');
+  // Initial tab is resolved after the apps controller boots (see hash routing there).
 })();
 
 /* ===== Job application tracker ===== */
@@ -827,9 +895,14 @@ document.querySelectorAll('.copy-btn').forEach(btn=>{
   const statsEl = document.getElementById('app-stats');
   const searchInput = document.getElementById('app-search');
   const filterSelect = document.getElementById('app-filter');
+  const listView = document.getElementById('app-list-view');
+  const detailView = document.getElementById('app-detail-view');
+  const detailCard = document.getElementById('app-detail-card');
+  const detailBackBtn = document.getElementById('app-detail-back');
 
   let apps = load();
   let editingId = null;
+  let detailId = null;
 
   // populate status selects
   STATUSES.forEach(s=>{
@@ -1120,6 +1193,7 @@ document.querySelectorAll('.copy-btn').forEach(btn=>{
     }
     save();
     resetForm();
+    showList();
     render();
   });
 
@@ -1128,6 +1202,7 @@ document.querySelectorAll('.copy-btn').forEach(btn=>{
   filterSelect.addEventListener('change', render);
 
   function startEdit(app){
+    showList();
     editingId = app.id;
     linkInput.value = app.link || '';
     companyInput.value = app.company || '';
@@ -1142,6 +1217,64 @@ document.querySelectorAll('.copy-btn').forEach(btn=>{
     linkInput.focus();
   }
 
+  function showList(){
+    detailId = null;
+    listView.classList.remove('hidden');
+    detailView.classList.remove('active');
+    if(window.showAppTab) window.showAppTab('apps');
+    if(history.replaceState) history.replaceState(null, '', '#apps');
+  }
+
+  function showDetail(id){
+    const app = apps.find(a=>a.id===id);
+    if(!app){
+      showList();
+      render();
+      return;
+    }
+    detailId = id;
+    listView.classList.add('hidden');
+    detailView.classList.add('active');
+    if(window.showAppTab) window.showAppTab('apps');
+    if(history.replaceState) history.replaceState(null, '', '#app/' + encodeURIComponent(id));
+    renderDetail(app);
+    window.scrollTo(0, 0);
+  }
+
+  function renderDetail(app){
+    const si = statusInfo(app.status);
+    const title = escapeHtml(app.position || '(포지션 미입력)');
+    const company = escapeHtml(app.company || hostOf(app.link));
+    const statusOptions = STATUSES.map(s=>
+      '<option value="' + s.value + '"' + (s.value===app.status?' selected':'') + '>' + s.label + '</option>'
+    ).join('');
+    detailCard.innerHTML =
+      '<div class="card-header">' +
+        '<div>' +
+          '<div class="card-title">' + title + '</div>' +
+          '<div class="card-sub">' + company + '</div>' +
+        '</div>' +
+        '<span class="status-badge ' + si.cls + '">' + si.label + '</span>' +
+      '</div>' +
+      '<div class="detail-field">' +
+        '<div class="detail-label">잡 포스팅 링크</div>' +
+        '<div class="detail-value"><a href="' + escapeHtml(app.link) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(app.link) + '</a></div>' +
+      '</div>' +
+      '<div class="detail-field">' +
+        '<div class="detail-label">지원일</div>' +
+        '<div class="detail-value">' + escapeHtml(app.date || '-') + '</div>' +
+      '</div>' +
+      '<div class="detail-field">' +
+        '<div class="detail-label">메모</div>' +
+        '<div class="detail-value">' + (app.memo ? escapeHtml(app.memo) : '<span style="color:var(--sub)">없음</span>') + '</div>' +
+      '</div>' +
+      '<div class="app-actions">' +
+        '<select data-action="status">' + statusOptions + '</select>' +
+        '<button type="button" class="btn btn-secondary btn-small" data-action="edit">수정</button>' +
+        '<button type="button" class="btn btn-danger btn-small" data-action="delete">삭제</button>' +
+      '</div>';
+  }
+
   function render(){
     // stats
     const counts = {};
@@ -1152,7 +1285,7 @@ document.querySelectorAll('.copy-btn').forEach(btn=>{
         '<span class="stat">' + s.label + ' <b>' + counts[s.value] + '</b></span>'
       ).join('');
 
-    // list (filtered)
+    // list (filtered) — compact title rows only
     const q = searchInput.value.trim().toLowerCase();
     const f = filterSelect.value;
     const filtered = apps.filter(a=>{
@@ -1168,60 +1301,73 @@ document.querySelectorAll('.copy-btn').forEach(btn=>{
       listEl.innerHTML = '<div class="card"><div class="app-empty">' +
         (apps.length === 0 ? '등록된 지원 이력이 없습니다. 위에서 잡 포스팅 링크를 추가해보세요.' : '검색/필터 결과가 없습니다.') +
         '</div></div>';
-      return;
-    }
-
-    listEl.innerHTML = filtered.map(a=>{
-      const si = statusInfo(a.status);
-      const title = escapeHtml(a.position || '(포지션 미입력)');
-      const company = escapeHtml(a.company || hostOf(a.link));
-      const statusOptions = STATUSES.map(s=>
-        '<option value="' + s.value + '"' + (s.value===a.status?' selected':'') + '>' + s.label + '</option>'
-      ).join('');
-      return '<div class="card app-item" data-id="' + a.id + '">' +
-        '<div class="card-header">' +
-          '<div>' +
+    } else {
+      listEl.innerHTML = filtered.map(a=>{
+        const si = statusInfo(a.status);
+        const title = escapeHtml(a.position || '(포지션 미입력)');
+        const company = escapeHtml(a.company || hostOf(a.link));
+        return '<div class="card app-row" data-id="' + a.id + '" role="button" tabindex="0">' +
+          '<div class="row-main">' +
             '<div class="card-title">' + title + '</div>' +
             '<div class="card-sub">' + company + '</div>' +
           '</div>' +
-          '<span class="status-badge ' + si.cls + '">' + si.label + '</span>' +
-        '</div>' +
-        '<a class="app-link" href="' + escapeHtml(a.link) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(a.link) + '</a>' +
-        (a.memo ? '<div class="app-memo">' + escapeHtml(a.memo) + '</div>' : '') +
-        '<div class="app-actions">' +
-          '<select data-action="status">' + statusOptions + '</select>' +
-          '<button type="button" class="btn btn-secondary btn-small" data-action="edit">수정</button>' +
-          '<button type="button" class="btn btn-danger btn-small" data-action="delete">삭제</button>' +
-          '<span class="app-date">지원일 ' + escapeHtml(a.date || '-') + '</span>' +
-        '</div>' +
-      '</div>';
-    }).join('');
+          '<div class="row-meta">' +
+            '<span class="status-badge ' + si.cls + '">' + si.label + '</span>' +
+            '<span class="app-date">' + escapeHtml(a.date || '') + '</span>' +
+          '</div>' +
+          '<span class="row-chevron" aria-hidden="true">›</span>' +
+        '</div>';
+      }).join('');
+    }
+
+    if(detailId){
+      const app = apps.find(a=>a.id===detailId);
+      if(app) renderDetail(app);
+      else showList();
+    }
   }
 
   listEl.addEventListener('click', e=>{
+    const row = e.target.closest('.app-row');
+    if(!row) return;
+    showDetail(row.getAttribute('data-id'));
+  });
+  listEl.addEventListener('keydown', e=>{
+    if(e.key !== 'Enter' && e.key !== ' ') return;
+    const row = e.target.closest('.app-row');
+    if(!row) return;
+    e.preventDefault();
+    showDetail(row.getAttribute('data-id'));
+  });
+
+  detailBackBtn.addEventListener('click', ()=>{
+    showList();
+    render();
+  });
+
+  detailCard.addEventListener('click', e=>{
     const btn = e.target.closest('button[data-action]');
-    if(!btn) return;
-    const id = btn.closest('.app-item').getAttribute('data-id');
-    const app = apps.find(a=>a.id===id);
+    if(!btn || !detailId) return;
+    const app = apps.find(a=>a.id===detailId);
     if(!app) return;
     if(btn.dataset.action === 'edit'){
       startEdit(app);
     } else if(btn.dataset.action === 'delete'){
       if(confirm('이 지원 이력을 삭제할까요?\n' + (app.company || app.link))){
-        apps = apps.filter(a=>a.id!==id);
-        if(editingId === id) resetForm();
+        apps = apps.filter(a=>a.id!==detailId);
+        if(editingId === detailId) resetForm();
         save();
+        showList();
         render();
         showToast('삭제되었습니다');
       }
     }
   });
 
-  listEl.addEventListener('change', e=>{
+  detailCard.addEventListener('change', e=>{
     const sel = e.target.closest('select[data-action="status"]');
-    if(!sel) return;
-    const id = sel.closest('.app-item').getAttribute('data-id');
-    const app = apps.find(a=>a.id===id);
+    if(!sel || !detailId) return;
+    const app = apps.find(a=>a.id===detailId);
     if(!app) return;
     app.status = sel.value;
     save();
@@ -1229,6 +1375,24 @@ document.querySelectorAll('.copy-btn').forEach(btn=>{
     showToast('상태가 변경되었습니다');
   });
 
+  window.showAppList = showList;
+
+  function applyHashRoute(){
+    const hash = (location.hash || '#apps').slice(1);
+    if(hash === 'resume'){
+      if(window.showAppTab) window.showAppTab('resume');
+      return;
+    }
+    const detailMatch = hash.match(/^app\/(.+)$/);
+    if(detailMatch){
+      if(window.showAppTab) window.showAppTab('apps');
+      showDetail(decodeURIComponent(detailMatch[1]));
+      return;
+    }
+    if(window.showAppTab) window.showAppTab('apps');
+    showList();
+  }
+  window.addEventListener('hashchange', applyHashRoute);
   // export / import
   document.getElementById('app-export-btn').addEventListener('click', ()=>{
     const blob = new Blob([JSON.stringify(apps, null, 2)], { type:'application/json' });
@@ -1274,6 +1438,7 @@ document.querySelectorAll('.copy-btn').forEach(btn=>{
   });
 
   render();
+  applyHashRoute();
 })();
 </script>
 

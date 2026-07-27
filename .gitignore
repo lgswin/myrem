@@ -1,21 +1,34 @@
-# macOS
+# macOS / AppleDouble (common on external volumes)
 .DS_Store
 .AppleDouble
 .LSOverride
 ._*
+.Spotlight-V100
+.Trashes
+.fseventsd
 
-# Thumbnails / editor junk
+# Windows
 Thumbs.db
-*.swp
-*.swo
-*~
+ehthumbs.db
+Desktop.ini
 
-# IDE / editor
+# Editor / IDE
 .idea/
 .vscode/
 *.code-workspace
+*.swp
+*.swo
+*~
+.cursor/
 
-# Logs & env
+# Logs & secrets
 *.log
 .env
 .env.*
+!.env.example
+
+# Local exports / backups (do not upload)
+job-applications*.json
+*.bak
+*.tmp
+*.temp
